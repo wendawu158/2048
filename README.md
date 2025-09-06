@@ -75,17 +75,64 @@ Therefore, within the program, the values just... Teleport... Yeah. Teleport. Th
 
 Not a great solution, but the best one without a tile-centric approach.
 
-## Implementing the game
+## Implementing the Game
 So, we can split the program into two different sections:
 * Defining the squares and the Board
 * Playing the game
 
-In my approach, I chose to store most of the information about the game in each board square. This information was:
+### The Squares
+
+In my approach, I created a custom class called Square, and stored most of the information about the game in each Square object. This information was:
 * If the square was empty or not
 * The value of the square
-* The position of the square on the board and in the array in which it is stored
-* If the square was touching any of the edges of the board.
+* The position of the square on the board, on the screen, and in the array in which it is stored
+* If the square was touching any of the edges of the board.         
 
+Because this information was stored in the square itself, it was easier to write the class function move to calculate how each square would move.
+
+For the move function, the function loops through the squares in the direction of travel (assuming it is not already at an edge). For each square it checks:
+* Is this square empty?
+* What is the value of this square?
+* Is this square the edge?
+
+Also because most the information were stored in these Squares, it was easier to impelment a class function to determine what the movement should be.
+
+### The Game
+
+First things first, we create an array to store the Squares, and we also use that as an opportunity to find the location of them on the screen and within the array.
+
+We also define some variables that will be useful to the running of our project.
+
+We also need to create the game loop[^4]. This is the core part of the game that runs the game, updates the graphics, and takes in the inputs.
+
+Our first big if tree is the one to determine the text at the bottom of the display. Depending on the game state, it displays:
+* The score
+* A welcome message ("Use wasd or arrow keys")
+* The game over message
+
+Our next loop is a loop that loops through all of the users inputs since the last time we checked the event list.
+
+Usually, this involves all keypresses and mouse clicks, but we are only interested in the arrow keys and wasd, so we ignore all other inputs.
+
+Then, we tell the program what the display should look like, and we update the display. We also update the score, if it has changed.
+
+# Final Thoughts
+
+## Animation
+The one thing that really bugged me was the animation. Try as I might, I can't seem to think of a solution for that. The best way I can think of would be to completely reprogram the Square class, but I don't really want to do that.
+
+Bad Graphics it is. Perhaps I'll revisit it someday.
+
+## Bugs
+There is also a bug in the code, where in certain scenarios, more than tiles might merge.
+
+For example, consider if a row has the tiles 8, 4, 2, 2.
+
+If the user inputs a right command, you'd expect 0, 8, 4, 4 as the output.
+
+However, in our program, it returns 0, 0, 0, 16.
+
+I suspect that the reason is we don't check if a tile has already merged, though no obvious solutions come to mind
 
 [^1]:In 2048, the game "pieces" are called tiles, and so an approach that stores the information of each tile would be a tile centric approach.\
 Basically, there are two different ways of representing game boards for board games. Tracking the information of a board as a whole, or allowing each piece to store their own information.
@@ -93,3 +140,4 @@ Basically, there are two different ways of representing game boards for board ga
   Therefore, the break even point for computational time for a 4x4 board is 4 tiles, for a 5x5 board it is also 4 tiles, and for a 6x6 board it is also 4 tiles.\
   For a half-full board, worst case scenario a board-centric approach would do 64 comparisons. For a tile-centric approach, the worst case scenario is 16 million comparisons.
 [^3]:In fact, you'll find that the code to handle the behaviour of squares in a column is identical to code that handles the behaviour of squares in a row, just with different constants.
+[^4]:This is true across all game engines, you just usually don't have to code it explicitly.
